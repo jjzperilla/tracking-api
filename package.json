@@ -3,15 +3,16 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "glob": "^11.0.1",
-    "puppeteer": "^21.3.0",
-"puppeteer-extra": "^3.3.4",
-"puppeteer-extra-plugin-stealth": "^2.11.1",
+    "puppeteer": "^24.4.0",
+    "puppeteer-extra": "^3.3.4",
+    "puppeteer-extra-plugin-stealth": "^2.11.1",
     "rimraf": "^6.0.1"
   },
   "name": "tracking-api",
   "version": "1.0.0",
   "scripts": {
-    "start": "node api/track.js"
+    "start": "node api/track.js",
+"preinstall": "SET PUPPETEER_SKIP_DOWNLOAD=true && echo Skipping Puppeteer download"
   },
   "keywords": [],
   "author": "",
