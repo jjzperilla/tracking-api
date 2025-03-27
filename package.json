@@ -11,7 +11,7 @@
   "name": "tracking-api",
   "version": "1.0.0",
   "scripts": {
-    "start": "node api/track.js",
+    "start": "node api/track.js"
   },
   "keywords": [],
   "author": "",
