@@ -11,7 +11,9 @@
   "name": "tracking-api",
   "version": "1.0.0",
   "scripts": {
-    "start": "node api/track.js"
+    "start": "node api/track.js",
+ "heroku-postbuild": "apt-get update && apt-get install -y $(cat apt.txt)",
+    "postinstall": "npx puppeteer browsers install chrome"
   },
   "keywords": [],
   "author": "",
