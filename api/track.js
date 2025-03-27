@@ -18,11 +18,11 @@ app.get("/api/track", async (req, res) => {
     let browser;
 
     try {
-const browser = await puppeteer.launch({
-  headless: true,
-  executablePath: '/app/.cache/puppeteer/chrome/linux-134.0.6998.35/chrome-linux64/chrome',
-  args: ["--no-sandbox", "--disable-setuid-sandbox"]
-});
+        browser = await puppeteer.launch({
+            headless: true,
+            executablePath: "/usr/bin/google-chrome-stable", // Use system Chrome
+            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+        });
 
         const page = await browser.newPage();
 
