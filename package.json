@@ -12,7 +12,9 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node api/track.js",
-"preinstall": "export PUPPETEER_SKIP_DOWNLOAD=true && echo Skipping Puppeteer download"
+  },
+"engines": {
+    "node": "18.x"
   },
   "keywords": [],
   "author": "",
