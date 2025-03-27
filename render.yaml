@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: tracking-api
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "node api/track.js"
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: PORT
+        value: 3000
