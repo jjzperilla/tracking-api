@@ -8,6 +8,14 @@ puppeteer.use(StealthPlugin());
 const app = express();
 app.use(cors());
 
+const PORT = process.env.PORT || 3000;
+
+console.log(`Server starting on port ${PORT}...`);
+
+app.get("/", (req, res) => {
+    res.send("Tracking API is running.");
+});
+
 app.get("/api/track", async (req, res) => {
     const trackingNumber = req.query.num;
     if (!trackingNumber) {
@@ -18,17 +26,24 @@ app.get("/api/track", async (req, res) => {
     let browser;
 
     try {
+        console.log(`Launching Puppeteer for tracking: ${trackingNumber}...`);
         browser = await puppeteer.launch({
-            headless: "new", // Use the latest headless mode
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+            headless: "new", 
+            args: [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-gpu",
+                "--disable-dev-shm-usage",
+                "--disable-software-rasterizer"
+            ],
         });
 
         const page = await browser.newPage();
-
+        console.log(`Navigating to ${url}...`);
+        
         await page.setUserAgent(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
         );
-
         await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
 
         await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
@@ -37,6 +52,7 @@ app.get("/api/track", async (req, res) => {
             return !document.body.innerText.includes("Please reload the page");
         }, { timeout: 60000 }).catch(() => console.log("Wait function timed out"));
 
+        console.log("Extracting tracking details...");
         const trackingEvents = await page.evaluate(() => {
             return Array.from(document.querySelectorAll(".event")).map(event => ({
                 date: event.querySelector(".event-time strong")?.innerText.trim() || "N/A",
@@ -60,20 +76,24 @@ app.get("/api/track", async (req, res) => {
         });
 
         if (!trackingEvents.length) {
+            console.warn("No tracking information found.");
             return res.status(404).json({ error: "Tracking information not found." });
         }
 
+        console.log("Tracking details successfully extracted!");
         res.json({ tracking_details: trackingEvents, parcel_info: parcelInfo });
 
     } catch (error) {
         console.error("Scraping error:", error);
         res.status(500).json({ error: error.message });
     } finally {
-        if (browser) await browser.close();
+        if (browser) {
+            console.log("Closing Puppeteer...");
+            await browser.close();
+        }
     }
 });
 
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`✅ Server running on port ${PORT}`);
 });
